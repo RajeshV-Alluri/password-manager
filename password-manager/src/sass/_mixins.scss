@@ -1,0 +1,20 @@
+@import './variables';
+
+@mixin input {
+	border-radius: 4px;
+	margin-bottom: 1em;
+	// border: 1px solid black;
+	border: none;
+	width: 20em;
+	padding: .5em;
+	background-color: $dark-violet;
+	color: #fff;
+
+	&::placeholder{
+		color: #cccccc;
+	}
+
+	&:focus{
+		outline: none;
+	}
+}
