@@ -1,4 +1,4 @@
-import '../css/main.min.css';
+import { is } from 'express/lib/request';
 import { useEffect, useState, useRef } from 'react'; 
 import {useNavigate} from 'react-router-dom'
 
@@ -10,7 +10,7 @@ const Register = () => {
 
   const [active, setActivator] = useState('sign-in')
   const [showPassword, setShowPassword] = useState('hidden')
-  const [message, setMessage] = useState('')
+  const [isValidEmail, setIsValidEmail] = useState('valid')
 
   const handleSignInForm = () => {setActivator('sign-in')}
   const handleSignUpForm = () => {setActivator('sign-up')}
@@ -30,9 +30,7 @@ const Register = () => {
   } 
 
   const checkSignUpValidation = (e) => {
-    e.preventDefault()
     let validForm = false
-    setMessage('')
 
     // First Name Validation
     if (firstName.current.children[0].value.trim() === '' || firstName.current.children[0].value.trim().length < 2) {
@@ -83,31 +81,21 @@ const Register = () => {
         verifyPassword.current.children[2].style.visibility = "hidden"
     }
 
-    // Post Registration Form to Backend
-    if (validForm) {
-      const registerForm = {
-        firstname: firstName.current.children[0].value.replace(/\s/g, ""),
-        lastname: lastName.current.children[0].value.replace(/\s/g, ""),
-        email: email.current.children[1].value.replace(/\s/g, "").toLowerCase(),
-        password: password.current.children[1].value.replace(/\s/g, "")
-      }
-  
-      fetch('http://localhost:5000/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(registerForm)
-        })
+    // Check if email is already in use
+    if (validEmail) {
+      fetch(`http://localhost:5000/valid-email/${validEmail}`)
         .then(res => res.json())
         .then(data => {
-          if (data.redirect && data.redirectTo === '/') {
-            setMessage(data.message)
-          }
+          data.validEmail ? setIsValidEmail('valid') : setIsValidEmail('invalid')
         })
         .catch(err => console.log(err))
-    }
-  }
 
-  console.log(message)
+      if (isValidEmail === 'invalid') {
+        e.preventDefault()
+      }
+    }
+
+  }
 
   useEffect(() => {}, [active])
 
@@ -122,7 +110,7 @@ const Register = () => {
         <div className={`${active === 'sign-in' ? "sign-in activeForm": 'deactive'}`}>
           <form action="#">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="rajesh.xyz@mail.com" maxlength="30"  />
+            <input type="email" id="email" name="email" value="rajesh.xyz@mail.com" maxlength="30"  />
             <label for="password">Password</label>
             <input type={`${showPassword === 'show' ? 'text' : 'password'}`} id="password" name="password" maxlength="25" />
             <i className={`bi bi-eye${showPassword === 'hidden' ? '-slash' : ''}`} onClick={handleClick}></i>
@@ -134,32 +122,34 @@ const Register = () => {
           </form> 
         </div>
         <div className={`${active === 'sign-up' ? "sign-up activeForm": 'deactive'}`}>
-          <form method="POST" onSubmit={checkSignUpValidation}>
+          <form method="post" action="http://www.localhost:5000/register" onSubmit={checkSignUpValidation}>
             <div className="name">
               <div ref={firstName}>
-                <input type="text" name="fname" placeholder="First Name" />
+                <input type="text" name="firstname" placeholder="Rajesh" maxlength="20"/>
                 <span>Required</span>
               </div>
               <div ref={lastName}>
-                <input type="text" name="lname" placeholder="Last Name" />
+                <input type="text" name="lastname" placeholder="Alluri" maxlength="20"/>
                 <span>Required</span>
               </div>
             </div>
             <div ref={email}>
               <label for="email">Email</label>
-              <input type="text" id="text" name="email" placeholder="rajesh.xyz@mail.com" />
+              <input type="text" id="text" name="email" placeholder="rajesh.xyz@mail.com" maxlength="30"/>
               <span>Required</span>
             </div>
             <div ref={password}>
               <label for="password">Password</label>
-              <input type="password" id="password" name="password" />
+              <input type="password" id="password" name="password" maxlength="30"/>
               <span>Above 8 characters with mix of [a-z, A-Z, 0-9]</span>
             </div>
             <div ref={verifyPassword}>
               <label for="password-check">Re-enter Password</label>
-              <input type="password" id="password-check" name="password" />
+              <input type="password" id="password-check" name="verify-password" maxlength="30"/>
               <span className="verifyPassword">Passwords doesn't match</span>
-              <span class="message" style={{color: errorRed}}>{message}</span>
+              <span class="message" style={
+              isValidEmail === 'valid' ? {display: "none"} : {display: "flex"}
+              }>Email has already been taken.</span>
             </div>
             <div class="submit">
               <input type="submit" value="Sign Up" />

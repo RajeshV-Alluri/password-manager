@@ -29,4 +29,19 @@
 		width: 60vw;
 		font-size: 1.3rem;
 	}
+
+	button{
+		border: none;
+		border-radius: 3px;
+		padding: .7em;
+		margin-top: 2em;
+		background-color: $cyan;
+		font-size: 1rem;
+		color: #fff;
+	}
+
+	.email-sent-info {
+		color: $error-red;
+		margin-left: 1em;
+	}
 }

@@ -8,6 +8,8 @@ const userSchema = new Schema ({
 	password: {type: String},
 	mainKey: {type: String},
 	verified: {type: Boolean, default: false},
+	verificationToken: {type: String},
+	active: {type: Boolean},
 	store: {type: Array}
 })
 

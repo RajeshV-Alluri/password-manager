@@ -3,10 +3,10 @@
 @mixin input {
 	border-radius: 4px;
 	margin-bottom: 1em;
-	// border: 1px solid black;
 	border: none;
-	width: 20em;
+	width: 19em;
 	padding: .5em;
+	font-size: .95rem;
 	background-color: $dark-violet;
 	color: #fff;
 

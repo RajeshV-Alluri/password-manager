@@ -19,8 +19,11 @@
     "history": "^5.1.0",
     "mongodb": "^4.2.1",
     "mongoose": "^6.0.14",
+    "nodemailer": "^6.7.2",
+    "nodemailer-express-handlebars": "^4.0.0",
     "react-router": "^6.1.1",
-    "react-router-dom": "^6.1.1"
+    "react-router-dom": "^6.1.1",
+    "uuidv4": "^6.2.12"
   },
   "devDependencies": {
     "concurrently": "^6.4.0",

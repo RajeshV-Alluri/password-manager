@@ -1,0 +1,38 @@
+@import '../variables';
+
+.error-message-404{
+	text-align: center;
+	width: 60em;
+	height: 60vh;
+	display: flex;
+	flex-direction: column;
+
+	h1{
+		color: $crimson-red;
+		font-size: 3rem;
+		margin-bottom: 2em;
+	}
+	
+	.error-status{
+		color: $crimson-red;
+		text-align: left;
+		margin-bottom: 2em;
+	}
+
+	.error-info{
+		text-align: right;
+
+		p{
+			font-size: 1.3rem;
+			margin: 0;
+
+			a{
+				color: #0275d8  ;
+
+				&:hover{
+					text-decoration: underline;
+				}
+			}
+		}
+	}
+}
