@@ -1,5 +1,6 @@
 .frame {
 	margin-top: -7em;
+	position: relative;
 
 	.solid-background {
 		background-color: $solid-green;
@@ -25,6 +26,34 @@
 		margin-bottom: .2em;
 	}
 
+	/********************************************
+	Forgot Password
+	*********************************************/
+	.email{
+		display: flex;
+		flex-direction: column;
+
+		label{
+			font-size: 1rem;
+			font-weight: 500;
+		}
+		
+		input{
+			@include input;
+			margin: .5em 0 0 0;
+			width: 18em;
+		}
+	}
+
+	.send-email{
+		margin-top: 1em;
+		padding: .7em;
+	}
+
+	/**********************************************
+	Forgot Password Ends
+	***********************************************/
+
 	p{
 		width: 60vw;
 		font-size: 1.3rem;
@@ -40,8 +69,14 @@
 		color: #fff;
 	}
 
-	.email-sent-info {
+	.email-sent-info, .valid-email-info {
 		color: $error-red;
 		margin-left: 1em;
+	}
+
+	.valid-email-info, .email-sent-timer{
+		position: absolute;
+		bottom: .7em;
+		left: 6.5em;
 	}
 }

@@ -6,10 +6,10 @@ const userSchema = new Schema ({
 	lastname: {type: String},
 	email: {type: String, unique: true},
 	password: {type: String},
-	mainKey: {type: String},
 	verified: {type: Boolean, default: false},
 	verificationToken: {type: String},
-	active: {type: Boolean},
+	prevPasswordChangeToken: {type: String},
+	passwordChangeToken : {type: String},
 	store: {type: Array}
 })
 

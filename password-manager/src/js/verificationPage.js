@@ -1,4 +1,4 @@
-import {useParams, useNavigate, create} from 'react-router-dom'
+import {useParams} from 'react-router-dom'
 import { useState } from 'react'
 import fetch from 'cross-fetch'
 
@@ -7,8 +7,6 @@ const Verification = () => {
 	const {verificationToken} = useParams()
 	const [disableAttr, setDisableAttr] = useState(false)
 	const [timer, setTimer] = useState(0)
-
-	const navigate = useNavigate()
 
 	const sendEmail = () => {
 

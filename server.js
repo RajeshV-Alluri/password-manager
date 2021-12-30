@@ -5,7 +5,7 @@ const fetch = require('cross-fetch')
 const cors = require('cors')
 
 const { MongoURI } = require('./config/keys')
-const router = require('./routes/index')
+const router = require('./routes/router')
 
 mongoose.connect(MongoURI, { useNewUrlParser: true, autoIndex: true })
 	.then(() => console.log("MongoDB Connected..."))

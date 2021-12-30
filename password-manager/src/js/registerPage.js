@@ -1,9 +1,7 @@
-import { is } from 'express/lib/request';
 import { useEffect, useState, useRef } from 'react'; 
-import {useNavigate} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 
 const Register = () => {
-  const navigate = useNavigate()
 
   const successGreen = '#20DF7F'
   const errorRed = '#e74c3c'
@@ -11,6 +9,7 @@ const Register = () => {
   const [active, setActivator] = useState('sign-in')
   const [showPassword, setShowPassword] = useState('hidden')
   const [isValidEmail, setIsValidEmail] = useState('valid')
+  const [validLoginCredentials, setValidLoginCredentials] = useState(true)
 
   const handleSignInForm = () => {setActivator('sign-in')}
   const handleSignUpForm = () => {setActivator('sign-up')}
@@ -21,6 +20,9 @@ const Register = () => {
   const password = useRef('');
   const verifyPassword = useRef('');
 
+  const loginEmail = useRef('')
+  const loginPassword = useRef('')
+
   const handleClick = () => {
     if (showPassword === 'hidden') {
       setShowPassword('show')
@@ -30,34 +32,30 @@ const Register = () => {
   } 
 
   const checkSignUpValidation = (e) => {
-    let validForm = false
 
     // First Name Validation
     if (firstName.current.children[0].value.trim() === '' || firstName.current.children[0].value.trim().length < 2) {
       firstName.current.children[1].style.color = errorRed
       e.preventDefault()
-      validForm = false
     } else {
       firstName.current.children[1].style.color = successGreen
-      validForm = true
     }
 
     // Last Name Validation
     if (lastName.current.children[0].value.trim() === '' || lastName.current.children[0].value.trim().length < 2) {
       lastName.current.children[1].style.color = errorRed
       e.preventDefault()
-      validForm = false
     } else {
       lastName.current.children[1].style.color = successGreen
     }
 
     // Email Validation
     const validEmail = email.current.children[1].value.trim()
+    // eslint-disable-next-line
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(validEmail)) {
       email.current.children[2].style.color = successGreen
     } else {
       email.current.children[2].style.color = errorRed
-      validForm = false
       e.preventDefault()
     }
 
@@ -67,7 +65,6 @@ const Register = () => {
       password.current.children[2].style.color = successGreen
     } else {
       password.current.children[2].style.color = errorRed
-      validForm = false
       e.preventDefault()
     }
 
@@ -75,7 +72,6 @@ const Register = () => {
     const reEntryPassword = verifyPassword.current.children[1].value.trim()
     if (validPassword !== reEntryPassword) {
       verifyPassword.current.children[2].style.visibility = "visible"
-      validForm = false
       e.preventDefault()
     } else {
         verifyPassword.current.children[2].style.visibility = "hidden"
@@ -97,6 +93,30 @@ const Register = () => {
 
   }
 
+  const login = (e) => {
+    e.preventDefault()
+    setValidLoginCredentials(true)
+
+    const data = {
+      loginEmail: loginEmail.current.value,
+      loginPassword: loginPassword.current.value
+    }
+
+    fetch('http://localhost:5000/valid-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (! data.loginCredentials) {
+          setValidLoginCredentials(false)
+          e.preventDefault()
+        }
+      })
+      .catch(err => console.log(err))
+  }
+
   useEffect(() => {}, [active])
 
   return(
@@ -108,16 +128,18 @@ const Register = () => {
         </div>
 
         <div className={`${active === 'sign-in' ? "sign-in activeForm": 'deactive'}`}>
-          <form action="#">
+          <form action="http://localhost:5000/login" method="POST" onSubmit={login}>
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" value="rajesh.xyz@mail.com" maxlength="30"  />
+            <input ref={loginEmail} type="text" id="email" name="email" placeholder="rajesh.xyz@mail.com" maxlength="30"  />
             <label for="password">Password</label>
-            <input type={`${showPassword === 'show' ? 'text' : 'password'}`} id="password" name="password" maxlength="25" />
+            <input ref={loginPassword} type={`${showPassword === 'show' ? 'text' : 'password'}`} id="password" name="password" maxlength="25" />
             <i className={`bi bi-eye${showPassword === 'hidden' ? '-slash' : ''}`} onClick={handleClick}></i>
-            {/* <span></span> */}
+            <span class="login-message" style={
+              validLoginCredentials ? {visibility: "hidden"} : {visibility: "visible"}
+              }>Invalid Email/Password.</span>
             <div class="submit">
               <input type="submit" value="Sign In" />
-              <span><a href="#">Forgot Password?</a></span>
+              <span><Link to='/forgot-password'>Forgot Password?</Link></span>
             </div>
           </form> 
         </div>
@@ -144,7 +166,7 @@ const Register = () => {
               <span>Above 8 characters with mix of [a-z, A-Z, 0-9]</span>
             </div>
             <div ref={verifyPassword}>
-              <label for="password-check">Re-enter Password</label>
+              <label for="password-check">Confirm Password</label>
               <input type="password" id="password-check" name="verify-password" maxlength="30"/>
               <span className="verifyPassword">Passwords doesn't match</span>
               <span class="message" style={
